@@ -5,7 +5,7 @@ const cors = require('cors');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
+const MONGOURI = 'mongodb+srv://admin:kg4uoAIGKMl8L8lU@weatherforecast.9wrhkx3.mongodb.net/weather_app?retryWrites=true&w=majority'
 app.use(bodyParser.json());
 
 // CORS settings
@@ -20,7 +20,7 @@ var corsOptions = {
 app.use(cors(corsOptions)); 
 
 // Connect to MongoDB
-mongoose.connect('mongodb://127.0.0.1:27017/weather_app', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(MONGOURI, { useNewUrlParser: true, useUnifiedTopology: true })
 .then(() => {
   console.log('Connected to the database');
   
@@ -62,7 +62,8 @@ app.get('/api/weather-search/:city', async (req, res) => {
     
     console.log('weatherData', weatherData);
     
-    await Weather.findOneAndUpdate({ city }, weatherData, { upsert: true, new: true,  })
+    await Weather.findOneAndUpdate({ city }, weatherData, { upsert: true, new: true,  }) //var olan veriyi update eder yoksada yeni olusturur
+    //await Weather.create(weatherData)  // update etmeden yeni veri ekler
     .then(async data => {
   
       return res.status(200).json({
